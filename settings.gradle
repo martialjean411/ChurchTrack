@@ -1,0 +1,45 @@
+pluginManagement {
+    repositories {
+        mavenLocal()
+        // Primary: Google Maven (requires dl.google.com access)
+        google {
+            content {
+                includeGroupByRegex "com\\.android.*"
+                includeGroupByRegex "com\\.google.*"
+                includeGroupByRegex "androidx.*"
+            }
+        }
+        // Fallback: storage.googleapis.com mirror (accessible when dl.google.com is blocked)
+        maven {
+            url "https://storage.googleapis.com/android/repository"
+            content {
+                includeGroupByRegex "com\\.android.*"
+                includeGroupByRegex "com\\.google.*"
+                includeGroupByRegex "androidx.*"
+            }
+        }
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+    repositories {
+        mavenLocal()
+        google()
+        // Fallback: storage.googleapis.com mirror (accessible when dl.google.com is blocked)
+        maven {
+            url "https://storage.googleapis.com/android/repository"
+            content {
+                includeGroupByRegex "com\\.android.*"
+                includeGroupByRegex "com\\.google.*"
+                includeGroupByRegex "androidx.*"
+            }
+        }
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+rootProject.name = "ChurchTrack"
+include ':app'

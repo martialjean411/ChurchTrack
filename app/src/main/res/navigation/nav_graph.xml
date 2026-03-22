@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_dashboard">
+
+    <!-- Dashboard -->
+    <fragment
+        android:id="@+id/nav_dashboard"
+        android:name="com.churchtrack.app.ui.dashboard.DashboardFragment"
+        android:label="Tableau de bord"
+        tools:layout="@layout/fragment_dashboard" />
+
+    <!-- Members -->
+    <fragment
+        android:id="@+id/nav_members"
+        android:name="com.churchtrack.app.ui.members.MembersFragment"
+        android:label="Fidèles"
+        tools:layout="@layout/fragment_members">
+        <action
+            android:id="@+id/action_members_to_addEditMember"
+            app:destination="@id/nav_add_edit_member" />
+        <action
+            android:id="@+id/action_members_to_memberDetail"
+            app:destination="@id/nav_member_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_add_edit_member"
+        android:name="com.churchtrack.app.ui.members.AddEditMemberFragment"
+        android:label="Ajouter / Modifier Fidèle"
+        tools:layout="@layout/fragment_add_edit_member">
+        <argument
+            android:name="memberId"
+            app:argType="long"
+            android:defaultValue="-1" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_member_detail"
+        android:name="com.churchtrack.app.ui.members.MemberDetailFragment"
+        android:label="Détail du Fidèle"
+        tools:layout="@layout/fragment_member_detail">
+        <argument
+            android:name="memberId"
+            app:argType="long"
+            android:defaultValue="-1" />
+        <action
+            android:id="@+id/action_memberDetail_to_addEditMember"
+            app:destination="@id/nav_add_edit_member" />
+    </fragment>
+
+    <!-- Attendance -->
+    <fragment
+        android:id="@+id/nav_attendance"
+        android:name="com.churchtrack.app.ui.attendance.AttendanceFragment"
+        android:label="Présences"
+        tools:layout="@layout/fragment_attendance">
+        <action
+            android:id="@+id/action_attendance_to_manualAttendance"
+            app:destination="@id/nav_manual_attendance" />
+        <action
+            android:id="@+id/action_attendance_to_attendeeList"
+            app:destination="@id/nav_manual_attendance" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_manual_attendance"
+        android:name="com.churchtrack.app.ui.attendance.ManualAttendanceFragment"
+        android:label="Saisie manuelle des présences"
+        tools:layout="@layout/fragment_manual_attendance">
+        <argument
+            android:name="serviceId"
+            app:argType="long"
+            android:defaultValue="-1" />
+        <argument
+            android:name="fromBiometric"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
+
+    <!-- Alerts -->
+    <fragment
+        android:id="@+id/nav_alerts"
+        android:name="com.churchtrack.app.ui.alerts.AlertsFragment"
+        android:label="Alertes d'absences"
+        tools:layout="@layout/fragment_alerts" />
+
+    <!-- Finance -->
+    <fragment
+        android:id="@+id/nav_finance"
+        android:name="com.churchtrack.app.ui.finance.FinanceFragment"
+        android:label="Finances"
+        tools:layout="@layout/fragment_finance" />
+
+    <!-- Projects -->
+    <fragment
+        android:id="@+id/nav_projects"
+        android:name="com.churchtrack.app.ui.projects.ProjectsFragment"
+        android:label="Projets"
+        tools:layout="@layout/fragment_projects">
+        <action
+            android:id="@+id/action_projects_to_projectDetail"
+            app:destination="@id/nav_project_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_project_detail"
+        android:name="com.churchtrack.app.ui.projects.ProjectDetailFragment"
+        android:label="Détail du Projet"
+        tools:layout="@layout/fragment_project_detail">
+        <argument
+            android:name="projectId"
+            app:argType="long"
+            android:defaultValue="-1" />
+    </fragment>
+
+    <!-- Users -->
+    <fragment
+        android:id="@+id/nav_users"
+        android:name="com.churchtrack.app.ui.users.UsersFragment"
+        android:label="Utilisateurs"
+        tools:layout="@layout/fragment_users" />
+
+    <!-- Settings -->
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="com.churchtrack.app.ui.settings.SettingsFragment"
+        android:label="Paramètres"
+        tools:layout="@layout/fragment_settings" />
+
+</navigation>
