@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary brand colors -->
+    <color name="blue_primary">#1565C0</color>
+    <color name="blue_primary_variant">#003c8f</color>
+    <color name="blue_secondary">#1E88E5</color>
+    <color name="blue_light">#42A5F5</color>
+    <color name="blue_surface">#E3F2FD</color>
+
+    <!-- Gold accent -->
+    <color name="gold">#C9A84C</color>
+    <color name="gold_light">#E8C97A</color>
+    <color name="gold_dark">#8B6914</color>
+    <color name="gold_surface">#FFF8E1</color>
+
+    <!-- Neutrals -->
+    <color name="white">#FFFFFF</color>
+    <color name="off_white">#F8F9FA</color>
+    <color name="light_gray">#F1F3F4</color>
+    <color name="medium_gray">#9E9E9E</color>
+    <color name="dark_gray">#424242</color>
+    <color name="black">#000000</color>
+
+    <!-- Status colors -->
+    <color name="success">#2E7D32</color>
+    <color name="success_light">#4CAF50</color>
+    <color name="success_surface">#E8F5E9</color>
+    <color name="danger">#C62828</color>
+    <color name="danger_light">#EF5350</color>
+    <color name="danger_surface">#FFEBEE</color>
+    <color name="warning">#E65100</color>
+    <color name="warning_light">#FF9800</color>
+    <color name="warning_surface">#FFF3E0</color>
+
+    <!-- Background -->
+    <color name="bg_primary">#FFFFFF</color>
+    <color name="bg_secondary">#F8F9FA</color>
+    <color name="bg_card">#FFFFFF</color>
+
+    <!-- Text -->
+    <color name="text_primary">#1A1A2E</color>
+    <color name="text_secondary">#555555</color>
+    <color name="text_hint">#9E9E9E</color>
+    <color name="text_on_primary">#FFFFFF</color>
+
+    <!-- Drawer -->
+    <color name="nav_header_bg">#1565C0</color>
+    <color name="nav_icon_selected">#C9A84C</color>
+    <color name="nav_text_selected">#C9A84C</color>
+
+    <!-- Status bar -->
+    <color name="status_bar">#003c8f</color>
+</resources>

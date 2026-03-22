@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_dashboard"
+        android:icon="@drawable/ic_dashboard"
+        android:title="Tableau de bord" />
+    <item
+        android:id="@+id/nav_members"
+        android:icon="@drawable/ic_people"
+        android:title="Fidèles" />
+    <item
+        android:id="@+id/nav_attendance"
+        android:icon="@drawable/ic_check_circle"
+        android:title="Présences" />
+    <item
+        android:id="@+id/nav_finance"
+        android:icon="@drawable/ic_money"
+        android:title="Finances" />
+    <item
+        android:id="@+id/nav_projects"
+        android:icon="@drawable/ic_build"
+        android:title="Projets" />
+</menu>

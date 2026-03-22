@@ -1,0 +1,3 @@
+-keep class com.churchtrack.app.data.database.entities.** { *; }
+-keepattributes *Annotation*
+-dontwarn kotlinx.**

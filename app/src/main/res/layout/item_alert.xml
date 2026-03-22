@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="3dp"
+    app:cardBackgroundColor="@color/white"
+    android:layout_margin="6dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_alert"
+                android:tint="@color/warning"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/tv_member_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Nom du Fidèle"
+                android:textSize="16sp"
+                android:textColor="@color/text_primary"
+                android:fontFamily="@font/dm_sans_semibold" />
+
+            <TextView
+                android:id="@+id/tv_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⚠️ En attente"
+                android:textSize="12sp"
+                android:textColor="@color/warning" />
+
+        </LinearLayout>
+
+        <!-- Info -->
+        <TextView
+            android:id="@+id/tv_absence_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2 absences consécutives"
+            android:textSize="13sp"
+            android:textColor="@color/danger"
+            android:layout_marginTop="8dp" />
+
+        <TextView
+            android:id="@+id/tv_last_presence"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dernière présence : inconnue"
+            android:textSize="12sp"
+            android:textColor="@color/medium_gray"
+            android:layout_marginTop="2dp" />
+
+        <!-- Action buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp"
+            android:weightSum="4">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_call"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:text="📞"
+                android:textSize="16sp"
+                app:backgroundTint="@color/success_surface"
+                android:textColor="@color/success"
+                app:cornerRadius="8dp"
+                android:layout_marginEnd="4dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_message"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:text="💬"
+                android:textSize="16sp"
+                app:backgroundTint="@color/blue_surface"
+                android:textColor="@color/blue_primary"
+                app:cornerRadius="8dp"
+                android:layout_marginEnd="4dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_follow_up"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:text="✔️"
+                android:textSize="16sp"
+                app:backgroundTint="@color/gold_surface"
+                android:textColor="@color/gold_dark"
+                app:cornerRadius="8dp"
+                android:layout_marginEnd="4dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_resolve"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:text="✅"
+                android:textSize="16sp"
+                app:backgroundTint="@color/success_surface"
+                android:textColor="@color/success"
+                app:cornerRadius="8dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
