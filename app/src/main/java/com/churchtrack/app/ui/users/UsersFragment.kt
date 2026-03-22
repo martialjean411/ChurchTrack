@@ -3,25 +3,23 @@ package com.churchtrack.app.ui.users
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.churchtrack.app.ChurchTrackApp
 import com.churchtrack.app.R
-import com.churchtrack.app.databinding.FragmentUsersBinding
 import com.churchtrack.app.data.repository.UserRepository
-import com.churchtrack.app.data.database.entities.AppUser
+import com.churchtrack.app.databinding.FragmentUsersBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputEditText
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 
 class UsersFragment : Fragment() {
 
     private var _binding: FragmentUsersBinding? = null
     private val binding get() = _binding!!
+
     private lateinit var userRepository: UserRepository
     private lateinit var adapter: UserAdapter
 
@@ -32,12 +30,10 @@ class UsersFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val app = requireActivity().application as ChurchTrackApp
-        userRepository = app.userRepository
-
+        userRepository = (requireActivity().application as ChurchTrackApp).userRepository
         setupRecyclerView()
         observeData()
-        setupFab()
+        binding.fabAddUser.setOnClickListener { showAddUserDialog() }
     }
 
     private fun setupRecyclerView() {
@@ -54,10 +50,9 @@ class UsersFragment : Fragment() {
             },
             onToggleRoleClick = { user ->
                 val newRole = if (user.role == "ADMIN") "USER" else "ADMIN"
-                lifecycleScope.launch {
-                    userRepository.updateUser(user.copy(role = newRole))
-                }
-                Snackbar.make(binding.root, "Rôle mis à jour", Snackbar.LENGTH_SHORT).show()
+                lifecycleScope.launch { userRepository.updateUser(user.copy(role = newRole)) }
+                val label = if (newRole == "ADMIN") "Administrateur" else "Utilisateur"
+                Snackbar.make(binding.root, "Rôle mis à jour : $label", Snackbar.LENGTH_SHORT).show()
             }
         )
         binding.rvUsers.apply {
@@ -73,14 +68,15 @@ class UsersFragment : Fragment() {
         }
     }
 
-    private fun setupFab() {
-        binding.fabAddUser.setOnClickListener {
-            showAddUserDialog()
-        }
-    }
-
     private fun showAddUserDialog() {
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_add_user, null)
+        val roleSpinner = dialogView.findViewById<MaterialAutoCompleteTextView>(R.id.spinner_role)
+        val roles = arrayOf("Utilisateur", "Administrateur")
+        roleSpinner.setAdapter(
+            android.widget.ArrayAdapter(requireContext(), R.layout.item_dropdown, roles)
+        )
+        roleSpinner.setText("Utilisateur", false)
+
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Nouvel utilisateur")
             .setView(dialogView)
@@ -88,20 +84,18 @@ class UsersFragment : Fragment() {
                 val username = dialogView.findViewById<TextInputEditText>(R.id.et_username).text.toString().trim()
                 val password = dialogView.findViewById<TextInputEditText>(R.id.et_password).text.toString()
                 val fullName = dialogView.findViewById<TextInputEditText>(R.id.et_fullname).text.toString().trim()
-                val roleSpinner = dialogView.findViewById<com.google.android.material.textfield.MaterialAutoCompleteTextView>(R.id.spinner_role)
                 val role = if (roleSpinner.text.toString() == "Administrateur") "ADMIN" else "USER"
 
                 if (username.isEmpty() || password.isEmpty() || fullName.isEmpty()) {
-                    Snackbar.make(binding.root, "Remplissez tous les champs", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(binding.root, "Remplissez tous les champs obligatoires", Snackbar.LENGTH_SHORT).show()
                     return@setPositiveButton
                 }
-
                 lifecycleScope.launch {
                     try {
                         userRepository.createUser(username, password, fullName, role)
-                        Snackbar.make(binding.root, "Utilisateur créé !", Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(binding.root, "Utilisateur \"$fullName\" créé !", Snackbar.LENGTH_SHORT).show()
                     } catch (e: Exception) {
-                        Snackbar.make(binding.root, "Nom d'utilisateur déjà utilisé", Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(binding.root, "Identifiant \"$username\" déjà utilisé", Snackbar.LENGTH_LONG).show()
                     }
                 }
             }

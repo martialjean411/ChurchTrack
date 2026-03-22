@@ -22,8 +22,11 @@ interface MemberDao {
     @Query("SELECT COUNT(*) FROM members WHERE isActive = 1")
     fun getActiveMemberCount(): LiveData<Int>
 
-    @Query("SELECT * FROM members WHERE hasFingerprintRegistered = 1")
+    @Query("SELECT * FROM members WHERE hasFingerprintRegistered = 1 AND isActive = 1")
     suspend fun getMembersWithFingerprint(): List<Member>
+
+    @Query("SELECT * FROM members WHERE isActive = 1 ORDER BY lastName, firstName")
+    suspend fun getAllActiveMembersSync(): List<Member>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMember(member: Member): Long

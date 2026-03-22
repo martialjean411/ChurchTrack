@@ -29,7 +29,7 @@
                 android:text="01/01/2024"
                 android:textSize="14sp"
                 android:textColor="@color/text_primary"
-                android:fontFamily="@font/dm_sans_semibold" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tv_offering"
@@ -63,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="11sp"
                 android:textColor="@color/medium_gray"
-                android:fontFamily="@font/dm_sans"
+                
                 android:visibility="gone" />
 
         </LinearLayout>
@@ -81,7 +81,7 @@
                 android:text="Total: 0"
                 android:textSize="14sp"
                 android:textColor="@color/gold"
-                android:fontFamily="@font/playfair_display_bold" />
+                android:textStyle="bold" />
 
             <ImageButton
                 android:id="@+id/btn_delete"

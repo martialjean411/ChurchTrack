@@ -21,7 +21,7 @@ class DashboardViewModel(
     private val alertRepo: AbsenceAlertRepository
 ) : ViewModel() {
 
-    val totalMembers = memberRepo.activeMemberCount
+    val totalMembers: LiveData<Int> = memberRepo.activeMemberCount
     val activeProjectCount = projectRepo.activeProjectCount
     val pendingAlertCount = alertRepo.pendingAlertCount
     val todayFinancial = financialRepo.getTodayTotal()

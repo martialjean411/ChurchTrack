@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.work.*
 import com.churchtrack.app.ChurchTrackApp
 import com.churchtrack.app.data.database.entities.AbsenceAlert
-import com.churchtrack.app.util.DateUtil
 import com.churchtrack.app.util.NotificationUtil
 import com.churchtrack.app.util.SessionManager
 import java.util.concurrent.TimeUnit
@@ -15,24 +14,8 @@ class AbsenceCheckWorker(
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
-        val app = context.applicationContext as ChurchTrackApp
-        val memberRepo = app.memberRepository
-        val attendanceRepo = app.attendanceRepository
-        val alertRepo = app.absenceAlertRepository
         val threshold = SessionManager.getAbsenceThreshold(context)
-
-        val members = memberRepo.getAllActiveMembers() // Need sync version
-        val recentServices = attendanceRepo.getRecentServices(threshold + 2)
-
-        if (recentServices.size < threshold) return Result.success()
-
-        // Check each active member
-        val allMembersList = app.database.memberDao().let { dao ->
-            // Use synchronous query for worker
-            var result: List<com.churchtrack.app.data.database.entities.Member> = emptyList()
-            result
-        }
-
+        runCheck(context, threshold)
         return Result.success()
     }
 
@@ -57,14 +40,16 @@ class AbsenceCheckWorker(
 
         suspend fun runCheck(context: Context, threshold: Int) {
             val app = context.applicationContext as ChurchTrackApp
-            val attendanceRepo = app.attendanceRepository
+            val db = app.database
             val alertRepo = app.absenceAlertRepository
 
-            val recentServices = attendanceRepo.getRecentServices(threshold + 2)
+            // Need at least `threshold` recent services to check
+            val recentServices = db.worshipServiceDao().getRecentServices(threshold + 2)
             if (recentServices.size < threshold) return
 
-            val db = app.database
+            // Only check members who have fingerprint registered (active attendance members)
             val members = db.memberDao().getMembersWithFingerprint()
+                .ifEmpty { return }
 
             members.forEach { member ->
                 val consecutiveAbsences = db.attendanceDao()
@@ -72,29 +57,34 @@ class AbsenceCheckWorker(
 
                 if (consecutiveAbsences >= threshold) {
                     val existingAlert = alertRepo.getLatestAlertForMember(member.id)
-                    val lastDate = attendanceRepo.getLastAttendanceDate(member.id) ?: ""
+                    val lastDate = db.attendanceDao()
+                        .getLastAttendanceDateForMember(member.id) ?: ""
 
-                    if (existingAlert == null || existingAlert.status == "RESOLVED") {
-                        val alert = AbsenceAlert(
-                            memberId = member.id,
-                            consecutiveAbsences = consecutiveAbsences,
-                            lastAttendanceDate = lastDate
-                        )
-                        val alertId = alertRepo.insertAlert(alert)
-                        NotificationUtil.showAbsenceAlert(
-                            context,
-                            member.fullName(),
-                            consecutiveAbsences,
-                            alertId.toInt()
-                        )
-                    } else if (existingAlert.consecutiveAbsences < consecutiveAbsences) {
-                        alertRepo.updateAlert(
-                            existingAlert.copy(
+                    when {
+                        existingAlert == null || existingAlert.status == "RESOLVED" -> {
+                            val alert = AbsenceAlert(
+                                memberId = member.id,
                                 consecutiveAbsences = consecutiveAbsences,
                                 lastAttendanceDate = lastDate
                             )
-                        )
+                            val alertId = alertRepo.insertAlert(alert)
+                            NotificationUtil.showAbsenceAlert(
+                                context, member.fullName(),
+                                consecutiveAbsences, alertId.toInt()
+                            )
+                        }
+                        existingAlert.consecutiveAbsences < consecutiveAbsences -> {
+                            alertRepo.updateAlert(
+                                existingAlert.copy(
+                                    consecutiveAbsences = consecutiveAbsences,
+                                    lastAttendanceDate = lastDate
+                                )
+                            )
+                        }
                     }
+                } else if (consecutiveAbsences == 0) {
+                    // Member came back — resolve any open alert
+                    alertRepo.resolveAlertsForMember(member.id)
                 }
             }
         }

@@ -34,7 +34,7 @@
                     android:text="Bonjour !"
                     android:textSize="22sp"
                     android:textColor="@color/white"
-                    android:fontFamily="@font/playfair_display_bold" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_date"
@@ -130,7 +130,7 @@
                     android:text="Finances du mois"
                     android:textSize="16sp"
                     android:textColor="@color/text_primary"
-                    android:fontFamily="@font/playfair_display_bold" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_month_finance"
@@ -139,7 +139,7 @@
                     android:text="0 FCFA"
                     android:textSize="28sp"
                     android:textColor="@color/gold"
-                    android:fontFamily="@font/playfair_display_bold"
+                    android:textStyle="bold"
                     android:layout_marginTop="8dp" />
 
             </LinearLayout>

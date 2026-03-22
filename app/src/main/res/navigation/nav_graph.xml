@@ -39,12 +39,16 @@
 
     <fragment
         android:id="@+id/nav_member_detail"
-        android:name="com.churchtrack.app.ui.members.MembersFragment"
-        android:label="Détail du Fidèle">
+        android:name="com.churchtrack.app.ui.members.MemberDetailFragment"
+        android:label="Détail du Fidèle"
+        tools:layout="@layout/fragment_member_detail">
         <argument
             android:name="memberId"
             app:argType="long"
             android:defaultValue="-1" />
+        <action
+            android:id="@+id/action_memberDetail_to_addEditMember"
+            app:destination="@id/nav_add_edit_member" />
     </fragment>
 
     <!-- Attendance -->

@@ -14,7 +14,7 @@
         android:text="Cultes récents"
         android:textSize="14sp"
         android:textColor="@color/medium_gray"
-        android:fontFamily="@font/dm_sans_semibold"
+        android:textStyle="bold"
         android:padding="16dp"
         android:paddingBottom="8dp" />
 
@@ -81,7 +81,7 @@
                     android:text="0 présents"
                     android:textSize="18sp"
                     android:textColor="@color/success"
-                    android:fontFamily="@font/playfair_display_bold" />
+                    android:textStyle="bold" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_view_attendees"
