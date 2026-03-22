@@ -62,6 +62,13 @@ class ProjectViewModel(private val repository: ProjectRepository) : ViewModel() 
 
     fun getContributions(projectId: Long) = repository.getContributionsForProject(projectId)
 
+    fun getContributionsForProject(projectId: Long) = repository.getContributionsForProject(projectId)
+
+    suspend fun getProjectById(id: Long) = repository.getProjectById(id)
+
+    fun deleteContribution(contribution: com.churchtrack.app.data.database.entities.ProjectContribution) =
+        viewModelScope.launch { repository.deleteContribution(contribution) }
+
     class Factory(private val repository: ProjectRepository) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             @Suppress("UNCHECKED_CAST")

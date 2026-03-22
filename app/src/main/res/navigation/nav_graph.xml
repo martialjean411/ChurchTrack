@@ -102,7 +102,18 @@
         tools:layout="@layout/fragment_projects">
         <action
             android:id="@+id/action_projects_to_projectDetail"
-            app:destination="@id/nav_projects" />
+            app:destination="@id/nav_project_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_project_detail"
+        android:name="com.churchtrack.app.ui.projects.ProjectDetailFragment"
+        android:label="Détail du Projet"
+        tools:layout="@layout/fragment_project_detail">
+        <argument
+            android:name="projectId"
+            app:argType="long"
+            android:defaultValue="-1" />
     </fragment>
 
     <!-- Users -->

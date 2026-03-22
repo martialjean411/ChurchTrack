@@ -40,7 +40,6 @@ class AlertsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupRecyclerView()
         observeData()
         setupTabs()
@@ -51,37 +50,29 @@ class AlertsFragment : Fragment() {
             onCallClick = { alert ->
                 lifecycleScope.launch {
                     val member = memberViewModel.getMemberById(alert.memberId)
-                    member?.let {
-                        val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${it.phone}"))
-                        startActivity(intent)
+                    if (member != null && member.phone.isNotEmpty()) {
+                        startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:${member.phone}")))
+                    } else {
+                        Snackbar.make(binding.root, "Aucun numéro de téléphone", Snackbar.LENGTH_SHORT).show()
                     }
                 }
             },
             onMessageClick = { alert ->
                 lifecycleScope.launch {
                     val member = memberViewModel.getMemberById(alert.memberId)
-                    member?.let {
-                        val intent = Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:${it.phone}"))
-                        intent.putExtra("sms_body", "Bonjour ${it.firstName}, l'église pense à vous et prend de vos nouvelles.")
+                    if (member != null && member.phone.isNotEmpty()) {
+                        val intent = Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:${member.phone}"))
+                        intent.putExtra("sms_body", "Bonjour ${member.firstName}, l'église pense à vous et prend de vos nouvelles.")
                         startActivity(intent)
                     }
                 }
             },
-            onFollowUpClick = { alert ->
-                showFollowUpDialog(alert.id)
-            },
+            onFollowUpClick = { alert -> showFollowUpDialog(alert.id) },
             onResolveClick = { alert ->
                 alertViewModel.resolveAlertsForMember(alert.memberId)
                 Snackbar.make(binding.root, "Alerte résolue", Snackbar.LENGTH_SHORT).show()
             },
-            getMemberName = { memberId ->
-                var name = "Fidèle"
-                lifecycleScope.launch {
-                    val member = memberViewModel.getMemberById(memberId)
-                    name = member?.fullName() ?: "Fidèle inconnu"
-                }
-                name
-            }
+            getMemberName = { _ -> "" } // names resolved asynchronously via submitListWithNames
         )
         binding.rvAlerts.apply {
             layoutManager = LinearLayoutManager(context)
@@ -89,19 +80,23 @@ class AlertsFragment : Fragment() {
         }
     }
 
+    private fun loadAlertsWithNames(alerts: List<com.churchtrack.app.data.database.entities.AbsenceAlert>) {
+        lifecycleScope.launch {
+            val membersMap = mutableMapOf<Long, String>()
+            alerts.forEach { alert ->
+                if (!membersMap.containsKey(alert.memberId)) {
+                    val member = memberViewModel.getMemberById(alert.memberId)
+                    membersMap[alert.memberId] = member?.fullName() ?: "Fidèle inconnu"
+                }
+            }
+            adapter.submitListWithNames(alerts, membersMap)
+            binding.tvEmptyAlerts.visibility = if (alerts.isEmpty()) View.VISIBLE else View.GONE
+        }
+    }
+
     private fun observeData() {
         alertViewModel.activeAlerts.observe(viewLifecycleOwner) { alerts ->
-            // We need member names — use a combined approach
-            lifecycleScope.launch {
-                val memberRepo = (requireActivity().application as ChurchTrackApp).memberRepository
-                val membersMap = mutableMapOf<Long, String>()
-                alerts.forEach { alert ->
-                    val member = memberViewModel.getMemberById(alert.memberId)
-                    membersMap[alert.memberId] = member?.fullName() ?: "Inconnu"
-                }
-                adapter.submitListWithNames(alerts, membersMap)
-            }
-            binding.tvEmptyAlerts.visibility = if (alerts.isEmpty()) View.VISIBLE else View.GONE
+            loadAlertsWithNames(alerts)
         }
 
         alertViewModel.pendingAlertCount.observe(viewLifecycleOwner) { count ->
@@ -113,26 +108,8 @@ class AlertsFragment : Fragment() {
         binding.tabLayout.addOnTabSelectedListener(object : com.google.android.material.tabs.TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: com.google.android.material.tabs.TabLayout.Tab?) {
                 when (tab?.position) {
-                    0 -> alertViewModel.activeAlerts.observe(viewLifecycleOwner) { alerts ->
-                        lifecycleScope.launch {
-                            val membersMap = mutableMapOf<Long, String>()
-                            alerts.forEach { alert ->
-                                val member = memberViewModel.getMemberById(alert.memberId)
-                                membersMap[alert.memberId] = member?.fullName() ?: "Inconnu"
-                            }
-                            adapter.submitListWithNames(alerts, membersMap)
-                        }
-                    }
-                    1 -> alertViewModel.allAlerts.observe(viewLifecycleOwner) { alerts ->
-                        lifecycleScope.launch {
-                            val membersMap = mutableMapOf<Long, String>()
-                            alerts.forEach { alert ->
-                                val member = memberViewModel.getMemberById(alert.memberId)
-                                membersMap[alert.memberId] = member?.fullName() ?: "Inconnu"
-                            }
-                            adapter.submitListWithNames(alerts, membersMap)
-                        }
-                    }
+                    0 -> alertViewModel.activeAlerts.observe(viewLifecycleOwner) { loadAlertsWithNames(it) }
+                    1 -> alertViewModel.allAlerts.observe(viewLifecycleOwner) { loadAlertsWithNames(it) }
                 }
             }
             override fun onTabUnselected(tab: com.google.android.material.tabs.TabLayout.Tab?) {}

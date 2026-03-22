@@ -41,27 +41,21 @@ class LoginActivity : AppCompatActivity() {
         val app = application as ChurchTrackApp
         lifecycleScope.launch {
             val user = app.userRepository.authenticate(username, password)
-            runOnUiThread {
-                binding.progressBar.visibility = View.GONE
-                binding.btnLogin.isEnabled = true
+            binding.progressBar.visibility = View.GONE
+            binding.btnLogin.isEnabled = true
 
-                if (user != null) {
-                    app.userRepository.let {
-                        lifecycleScope.launch {
-                            it.updateLastLogin(user.id)
-                        }
-                    }
-                    SessionManager.saveSession(
-                        this@LoginActivity,
-                        user.id, user.username, user.fullName, user.role
-                    )
-                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-                    finish()
-                } else {
-                    showError("Identifiants incorrects")
-                    binding.etPassword.text?.clear()
-                }
+            if (user != null) {
+                app.userRepository.updateLastLogin(user.id)
+                SessionManager.saveSession(
+                    this@LoginActivity,
+                    user.id, user.username, user.fullName, user.role
+                )
+                startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                finish()
+            } else {
+                showError("Identifiants incorrects")
+                binding.etPassword.text?.clear()
             }
         }
     }
